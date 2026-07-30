@@ -1,5 +1,15 @@
-.idea/aws.xml
-frontend/frontend-build.zip
-frontend/temp_extract/
-frontend/src/config.js~
-venv/
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Terraform variable files containing secrets
+*.auto.tfvars
+terraform.tfvars
+
+# IDE
+.idea/
+
+# macOS
+.DS_Store

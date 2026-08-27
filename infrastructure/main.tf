@@ -1,34 +1,49 @@
-resource "aws_instance" "grocerymate_ec2" {
+resource "aws_vpc" "my_vpc" {
+  cidr_block = var.vpc_cidr
 
-  ami                         = data.aws_ami.amazon_linux.id
-  instance_type               = var.instance_type
-  key_name                    = var.key_name
-  subnet_id                   = var.public_subnet_id
-  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
-  associate_public_ip_address = true
-
-  root_block_device {
-    volume_type           = "gp3"
-    volume_size           = 8
-    encrypted             = true
-    delete_on_termination = true
+  tags = {
+    Name = "terraform-grocerymate-vpc"
   }
+}
 
-  metadata_options {
-    http_endpoint = "enabled"
-    http_tokens   = "required"
+resource "aws_internet_gateway" "my_igw" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  tags = {
+    Name = "terraform-grocerymate-igw"
+  }
+}
+
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = var.public_subnet_cidr
+  availability_zone = var.public_subnet_az
+
+  tags = {
+    Name = "terraform-grocerymate-public-subnet"
+  }
+}
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.my_igw.id
   }
 
   tags = {
-    Name      = "grocerymate-ec2"
-    Project   = "grocerymate"
-    ManagedBy = "Terraform"
+    Name = "terraform-grocerymate-public-rt"
   }
 }
+resource "aws_route_table_association" "public_rta" {
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
 resource "aws_security_group" "ec2_sg" {
-  name        = "grocerymate-ec2-sg"
+  name        = "terraform-grocerymate-ec2-sg"
   description = "Allow SSH and Flask traffic"
-  vpc_id      = "vpc-0a4a9830459238976"
+  vpc_id      = aws_vpc.my_vpc.id
 
   ingress {
     description = "HTTP"
@@ -58,27 +73,25 @@ resource "aws_security_group" "ec2_sg" {
     Name = "grocerymate-ec2-sg"
   }
 }
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
 
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
-  }
 
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
+resource "aws_instance" "grocerymate_ec2" {
 
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
+  ami                         = var.aws_ami
+  instance_type               = var.instance_type
+  key_name                    = var.key_name
+  subnet_id                   = aws_subnet.public_subnet.id
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  associate_public_ip_address = true
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+
+
+
+
+  tags = {
+    Name      = "terraform-grocerymate-ec2"
+    Project   = "grocerymate"
+    ManagedBy = "Terraform"
   }
 }
+

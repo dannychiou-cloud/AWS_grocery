@@ -1,5 +1,7 @@
 # Terraform
 **/.terraform/*
+.terraform/
+.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 crash.log
@@ -13,7 +15,3 @@ terraform.tfvars
 
 # macOS
 .DS_Store
-# Terraform
-**/.terraform/
-*.tfstate
-*.tfstate.*

@@ -31,7 +31,23 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
-variable "public_subnet_id" {
+variable "public_subnet_cidr" {
   description = "Public subnet for EC2"
   type        = string
+  default     = "10.0.1.0/24"
+}
+variable "vpc_cidr" {
+  description = "CIDR block for VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+variable "public_subnet_az" {
+  description = "public subnet az"
+  type        = string
+  default     = "eu-north-1a"
+}
+variable "aws_ami" {
+  description = "AMI ID for EC2"
+  type        = string
+  default     = "ami-0cc0615fa97a31072"
 }

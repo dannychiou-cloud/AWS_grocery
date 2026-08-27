@@ -11,5 +11,5 @@ output "ec2_public_dns" {
 }
 
 output "selected_ami_id" {
-  value = data.aws_ami.amazon_linux.id
+  value = var.aws_ami
 }

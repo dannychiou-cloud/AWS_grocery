@@ -51,3 +51,39 @@ variable "aws_ami" {
   type        = string
   default     = "ami-0cc0615fa97a31072"
 }
+
+variable "private_subnet_1_cidr" {
+  type    = string
+  default = "10.0.2.0/24"
+}
+
+variable "private_subnet_2_cidr" {
+  type    = string
+  default = "10.0.3.0/24"
+}
+
+variable "private_subnet_1_az" {
+  type    = string
+  default = "eu-north-1a"
+}
+
+variable "private_subnet_2_az" {
+  type    = string
+  default = "eu-north-1b"
+}
+
+variable "db_name" {
+  type    = string
+  default = "grocerymate"
+}
+
+variable "db_username" {
+  type    = string
+  default = "groceryadmin"
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
+

@@ -2,7 +2,7 @@ resource "aws_vpc" "my_vpc" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    Name = "terraform-grocerymate-vpc"
+    Name = var.vpc_name
   }
 }
 
@@ -10,7 +10,7 @@ resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id
 
   tags = {
-    Name = "terraform-grocerymate-igw"
+    Name = var.igw_name
   }
 }
 
@@ -20,78 +20,78 @@ resource "aws_subnet" "public_subnet" {
   availability_zone = var.public_subnet_az
 
   tags = {
-    Name = "terraform-grocerymate-public-subnet"
+    Name = var.public_subnet_name
   }
 }
+
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.my_vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.default_route_cidr
     gateway_id = aws_internet_gateway.my_igw.id
   }
 
   tags = {
-    Name = "terraform-grocerymate-public-rt"
+    Name = var.public_route_table_name
   }
 }
+
 resource "aws_route_table_association" "public_rta" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public_rt.id
 }
 
 resource "aws_security_group" "ec2_sg" {
-  name        = "terraform-grocerymate-ec2-sg"
-  description = "Allow SSH and Flask traffic"
+  name        = var.ec2_security_group_name
+  description = var.ec2_security_group_description
   vpc_id      = aws_vpc.my_vpc.id
 
   ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = var.http_ingress_description
+    from_port   = var.http_port
+    to_port     = var.http_port
+    protocol    = var.tcp_protocol
+    cidr_blocks = [var.http_cidr]
   }
 
   ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["92.208.184.102/32"]
+    description = var.ssh_ingress_description
+    from_port   = var.ssh_port
+    to_port     = var.ssh_port
+    protocol    = var.tcp_protocol
+    cidr_blocks = [var.ssh_cidr]
   }
 
   egress {
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = var.egress_description
+    from_port   = var.all_traffic_port
+    to_port     = var.all_traffic_port
+    protocol    = var.all_traffic_protocol
+    cidr_blocks = [var.default_route_cidr]
   }
 
   tags = {
-    Name = "grocerymate-ec2-sg"
+    Name = var.ec2_security_group_tag_name
   }
 }
 
 resource "aws_instance" "grocerymate_ec2" {
-
   ami                         = var.aws_ami
   instance_type               = var.instance_type
   key_name                    = var.key_name
   subnet_id                   = aws_subnet.public_subnet.id
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
-  associate_public_ip_address = true
+  associate_public_ip_address = var.associate_public_ip_address
 
   iam_instance_profile = aws_iam_instance_profile.ec2_s3_profile.name
 
   tags = {
-    Name      = "terraform-grocerymate-ec2"
-    Project   = "grocerymate"
-    ManagedBy = "Terraform"
+    Name      = var.ec2_name
+    Project   = var.project_name
+    ManagedBy = var.managed_by
   }
 }
-
 
 resource "aws_subnet" "private_subnet_1" {
   vpc_id            = aws_vpc.my_vpc.id
@@ -99,7 +99,7 @@ resource "aws_subnet" "private_subnet_1" {
   availability_zone = var.private_subnet_1_az
 
   tags = {
-    Name = "terraform-grocerymate-private-subnet-1"
+    Name = var.private_subnet_1_name
   }
 }
 
@@ -109,37 +109,37 @@ resource "aws_subnet" "private_subnet_2" {
   availability_zone = var.private_subnet_2_az
 
   tags = {
-    Name = "terraform-grocerymate-private-subnet-2"
+    Name = var.private_subnet_2_name
   }
 }
 
 resource "aws_security_group" "rds_sg" {
-  name        = "terraform-grocerymate-rds-sg"
-  description = "Allow PostgreSQL traffic from EC2 only"
+  name        = var.rds_security_group_name
+  description = var.rds_security_group_description
   vpc_id      = aws_vpc.my_vpc.id
 
   ingress {
-    description     = "PostgreSQL from EC2"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
+    description     = var.postgres_ingress_description
+    from_port       = var.rds_port
+    to_port         = var.rds_port
+    protocol        = var.tcp_protocol
     security_groups = [aws_security_group.ec2_sg.id]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = var.all_traffic_port
+    to_port     = var.all_traffic_port
+    protocol    = var.all_traffic_protocol
+    cidr_blocks = [var.default_route_cidr]
   }
 
   tags = {
-    Name = "terraform-grocerymate-rds-sg"
+    Name = var.rds_security_group_tag_name
   }
 }
 
 resource "aws_db_subnet_group" "grocerymate_db_subnet_group" {
-  name = "terraform-grocerymate-db-subnet-group"
+  name = var.db_subnet_group_name
 
   subnet_ids = [
     aws_subnet.private_subnet_1.id,
@@ -147,35 +147,34 @@ resource "aws_db_subnet_group" "grocerymate_db_subnet_group" {
   ]
 
   tags = {
-    Name = "terraform-grocerymate-db-subnet-group"
+    Name = var.db_subnet_group_tag_name
   }
 }
 
 resource "aws_db_instance" "grocerymate_rds" {
-  identifier = "terraform-grocerymate-rds"
+  identifier = var.rds_identifier
 
-  engine         = "postgres"
-  engine_version = "17"
+  engine         = var.rds_engine
+  engine_version = var.rds_engine_version
 
-  instance_class    = "db.t3.micro"
-  allocated_storage = 20
-  storage_type      = "gp3"
+  instance_class    = var.rds_instance_class
+  allocated_storage = var.rds_allocated_storage
+  storage_type      = var.rds_storage_type
 
   db_name  = var.db_name
   username = var.db_username
   password = var.db_password
-  port     = 5432
+  port     = var.rds_port
 
   db_subnet_group_name   = aws_db_subnet_group.grocerymate_db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
-  publicly_accessible = false
-
-  skip_final_snapshot = true
+  publicly_accessible = var.rds_publicly_accessible
+  skip_final_snapshot = var.rds_skip_final_snapshot
 
   tags = {
-    Name      = "terraform-grocerymate-rds"
-    Project   = "grocerymate"
-    ManagedBy = "Terraform"
+    Name      = var.rds_name
+    Project   = var.project_name
+    ManagedBy = var.managed_by
   }
 }

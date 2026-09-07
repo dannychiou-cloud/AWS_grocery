@@ -23,6 +23,7 @@ resource "aws_s3_bucket_versioning" "avatars" {
     status = "Enabled"
   }
 }
+
 resource "aws_iam_role" "ec2_s3_role" {
   name = "terraform-grocerymate-ec2-s3-role"
 
@@ -63,7 +64,7 @@ resource "aws_iam_role_policy" "ec2_s3_policy" {
           "s3:PutObject"
         ]
 
-        Resource = "${aws_s3_bucket.avatars.arn}/*"
+        Resource = "arn:aws:s3:::grocerymate-avatars-danny-2026/*"
       },
       {
         Effect = "Allow"
@@ -72,7 +73,7 @@ resource "aws_iam_role_policy" "ec2_s3_policy" {
           "s3:ListBucket"
         ]
 
-        Resource = aws_s3_bucket.avatars.arn
+        Resource = "arn:aws:s3:::grocerymate-avatars-danny-2026"
       }
     ]
   })
@@ -81,4 +82,9 @@ resource "aws_iam_role_policy" "ec2_s3_policy" {
 resource "aws_iam_instance_profile" "ec2_s3_profile" {
   name = "terraform-grocerymate-ec2-s3-profile"
   role = aws_iam_role.ec2_s3_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "s3_full_access" {
+  role       = aws_iam_role.ec2_s3_role.name
+  policy_arn = var.s3_full_access_policy_arn
 }

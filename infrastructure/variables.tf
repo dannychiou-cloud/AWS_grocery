@@ -332,3 +332,7 @@ variable "s3_full_access_policy_arn" {
   type        = string
   default     = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
+variable "alert_email" {
+  description = "Email address for CloudWatch alerts"
+  type        = string
+}

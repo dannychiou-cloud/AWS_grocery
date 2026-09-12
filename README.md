@@ -33,7 +33,11 @@
 
 ## 🚀 Overview
 
-GroceryMate is an application developed as part of the Masterschools program by **Alejandro Roman Ibanez**. It is a modern, full-featured e-commerce platform designed for seamless online grocery shopping. It provides an intuitive user interface and a secure backend, allowing users to browse products, manage their shopping basket, and complete purchases efficiently.
+GroceryMate is a cloud-based grocery application deployed on AWS.
+
+The goal of this project was to learn how to deploy an application in the cloud and manage the infrastructure using Terraform.
+
+The application runs on an Amazon EC2 instance inside a custom VPC.
 
 GroceryMate is a modern, full-featured e-commerce platform designed for seamless online grocery shopping. It provides an intuitive user interface and a secure backend, allowing users to browse products, manage their shopping basket, and complete purchases efficiently.
 

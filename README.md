@@ -1,14 +1,7 @@
 # GroceryMate
 
-[Für das deutsche ReadMe hier klicken](#grocerymate-deutsch)
+<img width="1672" height="941" alt="AWS Architechture Danny Chiou" src="https://github.com/user-attachments/assets/1e997453-4921-4717-81d8-5c598bd28c69" />
 
-## 🏆 GroceryMate E-Commerce Platform
-
-[![Python](https://img.shields.io/badge/Language-Python%2C%20JavaScript-blue)](https://www.python.org/)
-[![OS](https://img.shields.io/badge/OS-Linux%2C%20Windows%2C%20macOS-green)](https://www.kernel.org/)
-[![Database](https://img.shields.io/badge/Database-PostgreSQL-336791)](https://www.postgresql.org/)
-[![GitHub Release](https://img.shields.io/github/v/release/AlejandroRomanIbanez/AWS_grocery)](https://github.com/AlejandroRomanIbanez/AWS_grocery/releases/tag/v2.0.0)
-[![Free](https://img.shields.io/badge/Free_for_Non_Commercial_Use-brightgreen)](#-license)
 
 ⭐ **Star us on GitHub** — it motivates us a lot!
 

@@ -150,21 +150,8 @@ The EC2 instance is located in a public subnet.
 
 The public subnet is connected to an Internet Gateway through a route table.
 
-```text
-Internet
-   │
-   ▼
-Internet Gateway
-   │
-   ▼
-Public Route Table
-   │
-   ▼
-Public Subnet
-   │
-   ▼
-EC2
-```
+<img width="476" height="601" alt="diagram ec2" src="https://github.com/user-attachments/assets/7391b25a-3ac7-405b-abb9-f2c50f321610" />
+
 
 HTTP access is used to reach the application.
 
@@ -196,16 +183,7 @@ Instead, the GroceryMate EC2 instance communicates with the database internally 
 
 Amazon RDS uses a DB Subnet Group containing two private subnets.
 
-```text
-VPC
-│
-├── Public Subnet
-│      └── EC2
-│
-├── Private RDS Subnet A
-│
-└── Private RDS Subnet B
-```
+<img width="1448" height="1086" alt="vpc diagram" src="https://github.com/user-attachments/assets/7e144470-0ba9-43bb-bca0-cb831b4fbb81" />
 
 Using two subnets allows the RDS DB Subnet Group to span multiple Availability Zones.
 
@@ -219,13 +197,8 @@ The database uses PostgreSQL port:
 
 The RDS Security Group allows port **5432 only from the EC2 Security Group**.
 
-```text
-EC2
- │
- │ TCP 5432
- ▼
-RDS PostgreSQL
-```
+<img width="1448" height="1086" alt="ec2diagram postgres" src="https://github.com/user-attachments/assets/cd60f1d8-d5c6-499d-bfe5-0ebe3735ee0f" />
+
 
 This prevents external clients from directly connecting to the database.
 
@@ -290,16 +263,8 @@ The project uses a custom VPC instead of relying only on the AWS default VPC.
 
 The network contains:
 
-```text
-GroceryMate VPC
-│
-├── Public Subnet
-│      └── EC2
-│
-├── Private RDS Subnet A
-│
-└── Private RDS Subnet B
-```
+<img width="806" height="527" alt="vpc diagram3" src="https://github.com/user-attachments/assets/32d05a14-03a5-4c1d-a95e-389191700eed" />
+
 
 Terraform is used to provision the VPC and its networking components.
 

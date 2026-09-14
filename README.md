@@ -1,377 +1,308 @@
 GroceryMate ☁️
 A cloud-based GroceryMate application deployed using AWS, Terraform, Docker, and PostgreSQL.
 
-This project was created as part of my Cloud Engineering learning path. The main focus is the AWS architecture, how the services work together, and how the infrastructure is managed with Terraform.
 <img width="1672" height="941" alt="project diagram" src="https://github.com/user-attachments/assets/58323404-abe8-490d-a199-601ee22c569a" />
 
+This project was created as part of my Cloud Engineering learning path. The main focus is the AWS architecture, how the services work together, and how the infrastructure is managed with Terraform.
 
-📌 Table of Contents
+---
 
-Project Overview
+## 📌 Table of Contents
 
-Architecture
+* [Project Overview](#-project-overview)
+* [Architecture](#️-architecture)
+* [AWS Services](#️-aws-services)
+* [Terraform](#-terraform)
+* [Docker](#-docker)
+* [Cloud Interaction](#-cloud-interaction)
+* [Environment Variables](#-environment-variables)
+* [Security](#-security)
+* [Monitoring](#-monitoring)
+* [AWS Costs](#-aws-costs)
+* [What I Learned](#-what-i-learned)
+* [Future Improvements](#-future-improvements)
 
-AWS Services Used
+---
 
-Where to Find Things
+# 📖 Project Overview
 
-Terraform
+**GroceryMate** is a backend application running inside a Docker container on **Amazon EC2**.
 
-Terraform Deployment
+The application uses:
 
-Docker and Environment Variables
+* **Amazon RDS PostgreSQL** for application data
+* **Amazon S3** for files such as avatar images
+* **Terraform** to create the AWS infrastructure
+* **CloudWatch** for monitoring
 
-Security
+The main goal of the project is to understand how AWS networking, compute, databases, storage, security, and monitoring work together.
 
-CloudWatch Monitoring
+---
 
-AWS Cost Evaluation
+# 🏗️ Architecture
 
-Future Improvements
+<img width="1672" height="941" alt="AWS Architecture Danny Chiou" src="https://github.com/user-attachments/assets/d2fe0782-26f9-4da6-a948-d66c1f5d8a07" />
 
-Author
+The infrastructure runs inside a custom **Amazon VPC**.
 
-📖 Project Overview
+The EC2 application server is located in a **public subnet**, while the RDS database uses **private subnets**.
 
-GroceryMate is a cloud engineering project that demonstrates how a containerized application can run on AWS.
+<img width="672" height="567" alt="flowchart" src="https://github.com/user-attachments/assets/c42df9f8-126b-49e1-84dc-64322b274d71" />
 
-The application runs on Amazon EC2, uses Amazon RDS PostgreSQL as its database, and uses Amazon S3 for object storage such as avatar files.
+ The Internet Gateway provides internet connectivity to the public side of the VPC.
 
-The AWS infrastructure is created and managed with Terraform.
+RDS is not publicly accessible and communicates with the application internally.
 
-Main technologies used:
+---
 
-AWS
+# ☁️ AWS Services
 
-Terraform
+| Service              | Purpose                              |
+| -------------------- | ------------------------------------ |
+| **EC2**              | Runs the GroceryMate application     |
+| **RDS PostgreSQL**   | Stores application data              |
+| **S3**               | Stores objects such as avatar images |
+| **VPC**              | Provides the network environment     |
+| **Internet Gateway** | Provides internet connectivity       |
+| **Security Groups**  | Control network traffic              |
+| **IAM**              | Gives EC2 permission to access S3    |
+| **CloudWatch**       | Monitors the EC2 instance            |
+| **SNS**              | Sends alarm notifications            |
 
-Docker
+---
 
-Python / Flask
+# 🧱 Terraform
 
-PostgreSQL
+Terraform is used to create and manage the AWS infrastructure as code.
 
-Git & GitHub
+The main files are:
 
-🏗️ Architecture
+| File               | Purpose                     |
+| ------------------ | --------------------------- |
+| `main.tf`          | AWS infrastructure          |
+| `variables.tf`     | Defines variables           |
+| `terraform.tfvars` | Provides variable values    |
+| `outputs.tf`       | Displays useful information |
 
-The application runs inside a custom AWS VPC.
+### Main Commands
 
-
-
-How the main components work together
-
-A user connects to the GroceryMate application running on EC2.
-
-The Internet Gateway provides internet connectivity to the public subnet.
-
-EC2 connects to RDS PostgreSQL on port 5432.
-
-RDS is private and accepts database traffic only from the EC2 Security Group.
-
-EC2 accesses S3 through an IAM Role instead of hardcoded AWS credentials.
-
-Terraform is used to provision and manage the infrastructure.
-
-The architecture keeps the application reachable while the database remains private.
-
-☁️ AWS Services Used
-
-Service
-
-Purpose
-
-Amazon EC2
-
-Runs the Dockerized GroceryMate application
-
-Amazon RDS PostgreSQL
-
-Stores application data in a managed database
-
-Amazon S3
-
-Stores objects such as avatar files
-
-Amazon VPC
-
-Provides the network for the project
-
-Public + Private Subnets
-
-Separate the public application from the private database
-
-Internet Gateway
-
-Gives the public subnet internet connectivity
-
-Route Table
-
-Routes public subnet traffic to the Internet Gateway
-
-IAM Role / Instance Profile
-
-Gives EC2 permission to access AWS services
-
-Security Groups
-
-Control network access to EC2 and RDS
-
-Amazon CloudWatch
-
-Monitors AWS resources and provides alarms
-
-📂 Where to Find Things
-
-File / Location
-
-What it is for
-
-main.tf
-
-Main Terraform infrastructure configuration
-
-variables.tf
-
-Defines the variables used by Terraform
-
-terraform.tfvars
-
-Stores the values supplied to the Terraform variables
-
-Dockerfile
-
-Instructions for building the GroceryMate Docker image
-
-.env
-
-Local application environment variables
-
-.gitignore
-
-Prevents local or sensitive files from being committed
-
-README.md
-
-Project documentation
-
-docs/
-
-Architecture diagrams and project images
-
-Sensitive values such as passwords should not be committed to GitHub.
-
-🛠️ Terraform
-
-Terraform is used to create and manage the AWS infrastructure.
-
-main.tf
-
-main.tf contains the main infrastructure configuration.
-
-It defines resources such as the VPC, subnets, EC2, RDS, S3, IAM, routing, and Security Groups.
-
-Instead of hardcoding every value, the resources can reference Terraform variables.
-
-Example:
-
-cidr_block = var.vpc_cidr
-
-variables.tf
-
-variables.tf defines the variables that Terraform expects.
-
-Example:
-
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-}
-
-The actual values are provided separately, for example in terraform.tfvars.
-
-This makes the infrastructure easier to change and reuse.
-
-🚀 Terraform Deployment
-
-The project uses the standard Terraform workflow:
-
-1. Initialize
-
+```bash
 terraform init
-
-Prepares Terraform and downloads the required provider.
-
-2. Format
-
-terraform fmt
-
-Formats the Terraform files.
-
-3. Validate
-
 terraform validate
-
-Checks the Terraform configuration.
-
-4. Review the Plan
-
 terraform plan
-
-Shows what Terraform will create, change, or remove.
-
-5. Deploy
-
 terraform apply
+```
 
-Creates or updates the AWS infrastructure.
+After testing, the infrastructure can be removed with:
 
-6. Remove the Environment
-
+```bash
 terraform destroy
+```
 
-Deletes the Terraform-managed AWS resources when they are no longer needed.
+This makes the environment repeatable and also helps avoid unnecessary AWS costs.
 
-This is especially useful in a learning environment because it helps avoid unnecessary AWS costs.
+---
 
-🐳 Docker and Environment Variables
+# 🐳 Docker
 
-The GroceryMate application is containerized with Docker.
+The GroceryMate application is packaged using Docker.
 
-The Dockerfile contains the instructions used to build the application image.
+The `Dockerfile` defines the application image.
 
-Build the image
+Build the image:
 
+```bash
 docker build -t grocerymate .
+```
 
-Run the container
+Run the container:
 
-docker run --env-file .env grocerymate
+```bash
+docker run -d --env-file .env -p 80:5000 grocerymate
+```
 
-.env
+Docker allows the application and its dependencies to run consistently on EC2.
 
-Application settings are passed through environment variables instead of being hardcoded inside the application.
+---
 
-The .env file can contain values such as:
+# 🔄 Cloud Interaction
 
-DB_HOST=...
-DB_NAME=...
-DB_USER=...
-DB_PASSWORD=...
+The main cloud communication is simple:
 
-The .env file should be kept out of GitHub when it contains passwords or other sensitive values.
+### User → EC2
 
-A .env.example file can be used to show which variables are required without exposing real credentials.
+Users access GroceryMate through the EC2 instance in the public subnet.
 
-🔐 Security
+### EC2 → RDS
 
-The project uses a few simple security controls:
+The application connects to PostgreSQL using:
 
-RDS is private with publicly_accessible = false.
+```text
+TCP 5432
+```
 
-Port 5432 is allowed to RDS only from the EC2 Security Group.
+RDS is configured with:
 
-S3 Block Public Access is enabled.
+```hcl
+publicly_accessible = false
+```
 
-S3 Versioning is enabled.
+Only the EC2 Security Group is allowed to connect to the database on port 5432.
 
-EC2 uses an IAM Role to access S3 instead of hardcoded AWS keys.
+### EC2 → S3
 
-SSH access is restricted using the configured ssh_cidr.
+The application uses Amazon S3 to store and retrieve objects.
 
-Sensitive local files such as .env and terraform.tfvars should not be committed when they contain secrets.
+EC2 receives the required permissions through an **IAM Role**, so AWS access keys do not need to be stored inside the application.
 
-📈 CloudWatch Monitoring
+---
 
-Amazon CloudWatch is used to monitor the AWS environment.
+# 🔐 Environment Variables
 
-The main focus is on infrastructure health, for example:
+Application configuration such as database details is handled using environment variables.
 
-EC2 CPU utilization
+Example `.env` file:
 
-EC2 instance health/status
+```text
+DB_HOST=<RDS endpoint>
+DB_NAME=<database name>
+DB_USER=<database user>
+DB_PASSWORD=<database password>
+```
 
-RDS performance and database health
+The `.env` file is excluded from GitHub using `.gitignore` because it can contain sensitive information.
 
-A CloudWatch alarm is used to watch EC2 CPU utilization and trigger when the configured threshold is exceeded.
+AWS access to S3 is handled separately through the EC2 IAM Role.
 
-CloudWatch makes it easier to notice unusual resource usage or problems without constantly checking the AWS Console.
+---
 
-An SNS email notification can be connected to an alarm for email alerts.
+# 🔒 Security
 
-📊 AWS Cost Evaluation
+The project includes several basic security measures:
 
-The main project costs come from EC2, RDS, S3, and data transfer.
+| Measure          | Implementation                 |
+| ---------------- | ------------------------------ |
+| Database         | RDS runs in private subnets    |
+| Public access    | RDS is not publicly accessible |
+| Database traffic | Port 5432 only from EC2        |
+| SSH              | Restricted using `ssh_cidr`    |
+| S3               | Block Public Access enabled    |
+| S3 files         | Versioning enabled             |
+| AWS permissions  | EC2 uses an IAM Role           |
+| Secrets          | `.env` excluded from Git       |
 
-Service
+The main idea is to keep the **application reachable** while keeping the **database private**.
 
-Main Cost Factor
+---
 
-Cost Approach
+# 📈 Monitoring
 
-EC2
+**Amazon CloudWatch** is used to monitor the EC2 instance.
 
-Instance running time
+A CloudWatch alarm monitors the configured EC2 metric.
 
-Use a small instance and run it only when needed
+When the alarm condition is reached, **Amazon SNS** can send an email notification.
 
-RDS
+<img width="382" height="491" alt="cloudwatch flow" src="https://github.com/user-attachments/assets/57176762-ec74-4f7c-926d-4cd55ba9ea4f" />
 
-DB running time and storage
 
-Use a small database instance for development
+This provides basic monitoring and notification for the infrastructure.
 
-S3
+---
 
-Storage and requests
+# 💰 AWS Costs
 
-Low cost for a small amount of project data
+The main AWS costs in this project are:
 
-Data Transfer
+| Service           | Main Cost                         |
+| ----------------- | --------------------------------- |
+| **EC2**           | Instance running time             |
+| **RDS**           | Database running time and storage |
+| **S3**            | Storage and requests              |
+| **CloudWatch**    | Monitoring usage                  |
+| **Data Transfer** | Data transferred                  |
 
-Amount of transferred data
+For this learning environment, **EC2 and RDS** are the main resources to watch.
 
-Keep unnecessary transfer low
+After testing, unused infrastructure can be removed using:
 
-VPC / Security Groups / IAM
-
-No normal hourly resource charge
-
-Used mainly for networking and security
-
-For this development project, one of the most important cost-control steps is:
-
+```bash
 terraform destroy
+```
 
-when the infrastructure is no longer required.
+This helps prevent unnecessary costs.
 
-🚀 Future Improvements
+---
 
-Possible future improvements include:
+# 🎓 What I Learned
 
-Application Load Balancer
+This project helped me understand how different cloud components work together.
 
-HTTPS with AWS Certificate Manager
+I learned how to:
 
-Route 53
+* Build AWS infrastructure using Terraform
+* Use public and private subnets
+* Run a Dockerized application on EC2
+* Connect EC2 securely to RDS
+* Store objects in Amazon S3
+* Use IAM Roles instead of hardcoded AWS credentials
+* Protect resources using Security Groups
+* Use environment variables for application configuration
+* Monitor infrastructure using CloudWatch
+* Use SNS for alarm notifications
+* Consider AWS costs when designing infrastructure
 
-Auto Scaling
+The biggest lesson was understanding how these services interact as **one cloud architecture**.
 
-CI/CD deployment
+---
 
-AWS Secrets Manager
+# 🚀 Future Improvements
 
-Remote Terraform state
+Possible improvements include:
 
-Additional monitoring and alerting
+* CloudWatch application logs
+* HTTPS
+* Application Load Balancer
+* Auto Scaling
+* Route 53
+* CI/CD pipeline
+* AWS Secrets Manager
+* Remote Terraform state
+* More restrictive IAM permissions
 
-👤 Author
+These improvements would make the application more secure, scalable, and production-ready.
 
-Danny Chiou
+---
+
+# 👤 Author
+
+**Danny Chiou**
 Cloud Engineering Student
 
-Technologies Practiced
+**Technologies:** AWS • Terraform • Docker • EC2 • RDS • S3 • IAM • VPC • CloudWatch • SNS • PostgreSQL • Python • Flask • Git • GitHub
 
-AWS • Terraform • Docker • EC2 • RDS • S3 • IAM • VPC • PostgreSQL • Python • Flask • Git • GitHub
+---
 
+# ✅ Summary
 
+GroceryMate demonstrates a basic AWS cloud architecture managed using Terraform.
+
+```text
+Internet
+   │
+   ▼
+Internet Gateway
+   │
+   ▼
+EC2 + Docker
+   │
+   ├────► Private RDS
+   │
+   └────► Amazon S3
+
+EC2 ──► CloudWatch ──► SNS
+```
+
+**Terraform** manages the infrastructure, **Docker** runs the application, **RDS** stores application data, **S3** stores objects, **IAM** controls permissions, and **CloudWatch** provides monitoring.
+
+The project demonstrates how the main components of a cloud application can work together securely on AWS.

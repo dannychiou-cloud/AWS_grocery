@@ -1,5 +1,6 @@
 GroceryMate ☁️
 <img width="1672" height="941" alt="project diagram" src="https://github.com/user-attachments/assets/58323404-abe8-490d-a199-601ee22c569a" />
+GroceryMate ☁️
 
 A cloud-based GroceryMate application deployed using AWS, Terraform, Docker, and PostgreSQL.
 
@@ -372,5 +373,6 @@ Cloud Engineering Student
 
 Technologies Practiced
 
-AWS • Terraform • Docker • EC2 • RDS • S3 • IAM • VPC • PostgreSQL • Python • Flask • Git • GitHub<img width="1672" height="941" alt="project diagram" src="https://github.com/user-attachments/assets/024acf06-63e8-4a93-859b-0426338da4be" />
+AWS • Terraform • Docker • EC2 • RDS • S3 • IAM • VPC • PostgreSQL • Python • Flask • Git • GitHub
+
 

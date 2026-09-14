@@ -1,10 +1,9 @@
 GroceryMate ☁️
-<img width="1672" height="941" alt="project diagram" src="https://github.com/user-attachments/assets/58323404-abe8-490d-a199-601ee22c569a" />
-GroceryMate ☁️
-
 A cloud-based GroceryMate application deployed using AWS, Terraform, Docker, and PostgreSQL.
 
 This project was created as part of my Cloud Engineering learning path. The main focus is the AWS architecture, how the services work together, and how the infrastructure is managed with Terraform.
+<img width="1672" height="941" alt="project diagram" src="https://github.com/user-attachments/assets/58323404-abe8-490d-a199-601ee22c569a" />
+
 
 📌 Table of Contents
 

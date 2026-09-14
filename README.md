@@ -26,7 +26,7 @@ This project was created as part of my Cloud Engineering learning path. The main
 
 # 📖 Project Overview
 
-**GroceryMate** is a Fullstack application running inside a Docker container on **Amazon EC2**.
+**GroceryMate** is a full-stack application running inside a Docker container on **Amazon EC2**.
 
 The application uses:
 

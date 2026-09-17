@@ -164,11 +164,15 @@ Application configuration such as database details is handled using environment 
 Example `.env` file:
 
 ```text
-DB_HOST=<RDS endpoint>
-DB_NAME=<database name>
-DB_USER=<database user>
-DB_PASSWORD=<database password>
-```
+POSTGRES_USER=<database user>
+POSTGRES_PASSWORD=<database password>
+POSTGRES_DB=<database name>
+POSTGRES_HOST=<RDS endpoint>
+POSTGRES_URI=<database connection URI>
+
+S3_BUCKET_NAME=<S3 bucket name>
+S3_REGION=<AWS region>
+USE_S3_STORAGE=<true/false>
 
 The `.env` file is excluded from GitHub using `.gitignore` because it can contain sensitive information.
 
